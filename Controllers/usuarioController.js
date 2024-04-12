@@ -1,7 +1,7 @@
 const JWT = require("jsonwebtoken");
 const cloudinary = require("../Config/cloudinary");
 const fs = require("fs");
-const { hashSenha, compararSenha } = require("../Helpers/AuthHelper");
+const { hashSenha, compararSenha } = require("../Helpers/authHelper");
 const usuarioModel = require("../Models/usuarioModel");
 var { expressjwt: jwt } = require("express-jwt");
 //middleware
