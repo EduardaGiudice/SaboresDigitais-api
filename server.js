@@ -25,10 +25,10 @@ app.use("/api/v1/lista", require("./Routes/listaRoutes"));
 app.use("/api/v1/comentarios", require("./Routes/comentarioRoutes"));
 
 
-app.get("", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Bem vindo ao app",
+app.get("/", (req, res) => {
+  res.status(200).send({
+    'success': true,
+    'msg': "Node Server Running",
   });
 });
 
