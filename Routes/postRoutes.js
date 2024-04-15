@@ -13,11 +13,6 @@ const {
   dislikePostController,
 } = require("../Controllers/postController");
 
-const {adicionarComentarioController, listarComentariosController} = require("../Controllers/comentarioController")
-
-const storage = require("../Config/multer");
-const multer = require("multer");
-
 const router = express.Router();
 const upload = require('../Config/multer')
 
@@ -46,14 +41,19 @@ router.put(
   atualizarPostController
 );
 
-router.post("/like/:postId", exigirLogin, likePostController);
-router.get("/checkLike/:postId", exigirLogin, checkLikeController); // Rota para verificar se o usuário curtiu um post
-router.get("/numLikes/:postId", quantidadeLikesController); // Rota para contar as curtidas de um post
-router.delete("/dislike/:postId", exigirLogin, dislikePostController); // Rota para descurtir um post
-
 //Buscar por nome da Receita
-router.get("/buscarPorNome/:nomeReceita", buscarPorNomeController);
+router.get("/buscarPorNome/:nomeReceita", exigirLogin, buscarPorNomeController);
 
+//Curtir Post
+router.post("/like/:postId", exigirLogin, likePostController);
 
+// Verificar se o usuario curtiu um post
+router.get("/checkLike/:postId", exigirLogin, checkLikeController);
+
+ // Contar as curtidas de um post
+router.get("/numLikes/:postId", exigirLogin, quantidadeLikesController);
+
+// Descurtir um post
+router.delete("/dislike/:postId", exigirLogin, dislikePostController);
 
 module.exports = router;

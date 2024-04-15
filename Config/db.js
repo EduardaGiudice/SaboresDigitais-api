@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const colors = require('colors')
 
+// Função para conectar ao banco de dados MongoDB
 const conectarDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URL)

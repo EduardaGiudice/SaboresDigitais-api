@@ -6,19 +6,19 @@ const usuarioSchema = new mongoose.Schema(
   {
     nomeUsuario: {
       type: String,
-      required: [true, "Por favor adicione o nome"],
+      required: true,
       trim: true,
     },
 
     email: {
       type: String,
-      required: [true, "Por favor adicione o email"],
+      required: true,
       trim: true,
     },
 
     senha: {
       type: String,
-      required: [true, "Por favor adicione a senha"],
+      required: true,
       min: 6,
       max: 50,
     },

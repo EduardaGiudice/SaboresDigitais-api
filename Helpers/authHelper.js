@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt')
 
-//Função Hash
-
+// Função para gerar o hash de uma senha
 exports.hashSenha = (senha) => {
     return new Promise((resolve,reject ) => {
         bcrypt.genSalt(10,(err,salt) => {
@@ -18,6 +17,7 @@ exports.hashSenha = (senha) => {
     })
 }
 
+// Função para comparar uma senha fornecida com um hash
 exports.compararSenha = (senha, hashed) =>{
     return bcrypt.compare(senha, hashed)
 }

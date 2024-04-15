@@ -14,22 +14,22 @@ const postSchema = new mongoose.Schema(
 
     nomeReceita: {
       type: String,
-      required: [true, "Por favor, adicione o nome da receita"],
+      required: true,
     },
 
     descricaoReceita: {
       type: String,
-      required: [true, "Por favor, adicione uma descrição para a receita"],
+      required: true,
     },
 
     ingredientes: {
       type: [String],
-      required: [true, "Por favor, adicione os ingredientes da receita"],
+      required: true,
     },
 
     passosPreparo: {
       type: [String],
-      required: [true, "Por favor, adicione o modo de preparo da receita"],
+      required: true,
     },
 
     donoPost: {

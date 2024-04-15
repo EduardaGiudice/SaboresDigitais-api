@@ -17,11 +17,9 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 //Rotas
-
 app.use("/api/v1/auth", require("./Routes/usuarioRoutes"));
 app.use("/api/v1/post", require("./Routes/postRoutes"));
 app.use("/api/v1/lista", require("./Routes/listaRoutes"));
-// server.js (ou onde você define suas rotas)
 app.use("/api/v1/comentarios", require("./Routes/comentarioRoutes"));
 
 

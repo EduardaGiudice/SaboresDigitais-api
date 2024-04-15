@@ -9,9 +9,16 @@ const {
 
 const router = express.Router();
 
+//Adicionar novo Item
 router.post("/adicionarItem", exigirLogin, adicionarItemController);
+
+//Listar itens da lista de compras
 router.get("/listarItens", exigirLogin, listarItensController);
-router.delete("/removerItem/:id", removerItemController);
+
+//Remover item da lista de compras
+router.delete("/removerItem/:id", exigirLogin, removerItemController);
+
+//Remover todos os itens da lista de compras
 router.delete("/limparLista", exigirLogin, limparListaController);
 
 module.exports = router;

@@ -4,16 +4,20 @@ const fs = require("fs");
 const { hashSenha, compararSenha } = require("../Helpers/authHelper");
 const usuarioModel = require("../Models/usuarioModel");
 var { expressjwt: jwt } = require("express-jwt");
-//middleware
+
+// Middleware para exigir autenticação
 const exigirLogin = jwt({
-  secret: process.env.JWT_SECRET,
-  algorithms: ["HS256"],
+  secret: process.env.JWT_SECRET, // Chave secreta para assinar e verificar tokens JWT
+  algorithms: ["HS256"], // Algoritmo utilizado para assinar tokens JWT
 });
 
 // Registro do usuário
 const registroController = async (req, res) => {
   try {
+    // Extrair informações do corpo da requisição
     const { nomeUsuario, email, senha } = req.body;
+
+    // Verificar se todos os campos obrigatórios estão presentes e a senha tem pelo menos 6 caracteres
     if (!nomeUsuario || !email || !senha || senha.length < 6) {
       return res.status(400).send({
         success: false,
@@ -31,16 +35,17 @@ const registroController = async (req, res) => {
       });
     }
 
-    // Hash da senha
+    // Hash da senha antes de salvar no banco de dados
     const hashedSenha = await hashSenha(senha);
 
-    // Salvando Usuário
+    // Criar um novo usuário no bd
     const usuario = await usuarioModel.create({
       nomeUsuario,
       email,
       senha: hashedSenha,
     });
 
+    // Retorna uma resposta de sucesso
     return res.status(201).send({
       success: true,
       message: "Registrado com sucesso, faça seu login",
@@ -58,8 +63,10 @@ const registroController = async (req, res) => {
 // Login do usuário
 const loginController = async (req, res) => {
   try {
+    // Obtém informações do corpo da requisição
     const { email, senha } = req.body;
-    // Validação
+
+    // Verificar se email e senha foram fornecidos
     if (!email || !senha) {
       return res.status(400).send({
         success: false,
@@ -67,7 +74,7 @@ const loginController = async (req, res) => {
       });
     }
 
-    // Encontrar usuário
+    // Encontrar o usuário com o email fornecido
     const usuario = await usuarioModel.findOne({ email });
     if (!usuario) {
       return res.status(400).send({
@@ -76,7 +83,7 @@ const loginController = async (req, res) => {
       });
     }
 
-    // Senha Correspondente
+    // Comparar a senha fornecida com a senha armazenada no bd
     const matchSenha = await compararSenha(senha, usuario.senha);
     if (!matchSenha) {
       return res.status(400).send({
@@ -85,14 +92,15 @@ const loginController = async (req, res) => {
       });
     }
 
-    //Token JWT
+    // Gerar token JWT para autenticação
     const token = await JWT.sign({ _id: usuario._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
-    //senha indefinida
+    // Remover a senha do usuário da resposta
     usuario.senha = undefined;
 
+    // Retorna uma resposta de sucesso
     return res.status(200).send({
       success: true,
       token,
@@ -114,10 +122,10 @@ const atualizarUsuarioController = async (req, res) => {
   try {
     const { nomeUsuario, senha, email } = req.body;
 
-    // Encontrar usuário
+    // Encontrar o usuário pelo email
     const usuario = await usuarioModel.findOne({ email });
 
-    // Validar senha
+    // Validar senha se fornecida
     if (senha && senha.length < 6) {
       return res.status(400).send({
         success: false,
@@ -137,6 +145,8 @@ const atualizarUsuarioController = async (req, res) => {
 
       // Fazer upload da nova imagem
       const result = await cloudinary.uploader.upload(req.file.path);
+
+      // Inicializar variáveis para armazenar a URL da imagem de perfil e o ID do Cloudinary
       imagemPerfilUrl = result.secure_url;
       cloudinaryId = result.public_id;
 
@@ -144,20 +154,22 @@ const atualizarUsuarioController = async (req, res) => {
       fs.unlinkSync(req.file.path);
     }
 
+    // Hash da nova senha, se fornecida
     const senhaHashed = senha ? await hashSenha(senha) : undefined;
 
-    // Atualizar usuário
+    // Atualizar o perfil do usuário no bd
     const atualizarUsuario = await usuarioModel.findOneAndUpdate(
-      { email },
+      { email }, // Critério de busca: email
       {
         nomeUsuario: nomeUsuario || usuario.nomeUsuario,
         senha: senhaHashed || usuario.senha,
-        imagemPerfil: imagemPerfilUrl, // Atualiza o URL da imagem
+        imagemPerfil: imagemPerfilUrl,
         cloudinary_id: cloudinaryId,
       },
       { new: true }
     );
 
+    // Responder com sucesso e o novo objeto de usuário atualizado
     res.status(200).send({
       success: true,
       message: "Perfil atualizado com sucesso",
@@ -204,6 +216,7 @@ const atualizarSenhaController = async (req, res) => {
     usuario.senha = novaSenhaHashed;
     await usuario.save();
 
+    // Retorna uma resposta de sucesso
     return res.status(200).send({
       success: true,
       message: "Senha atualizada com sucesso",
@@ -222,15 +235,17 @@ const dadosUsuarioController = async (req, res) => {
   try {
     const usuarioId = req.auth._id; // ID do usuário extraído do token JWT
 
+    // Encontrar o usuário pelo ID
     const usuario = await usuarioModel.findById(usuarioId);
 
+    // Verificar se o usuário foi encontrado
     if (!usuario) {
       return res.status(404).send({
         success: false,
         message: "Usuário não encontrado",
       });
     }
-
+    // Retornar os dados do usuário
     return res.status(200).send({
       success: true,
       usuario,

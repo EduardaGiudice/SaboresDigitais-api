@@ -1,15 +1,16 @@
 const multer = require('multer')
 
-//definindo storage
-
+// Define o storage (local onde os arquivos serão armazenados)
 const storage = multer.diskStorage({
-  filename: function(req,file,callback) {
-    callback(null,Date.now()+ file.originalname)
-  }
-})
+  // Define o nome do arquivo que será salvo no disco
 
-//upload parametros
+  filename: function (req, file, callback) {
+    // O nome do arquivo será uma combinação do timestamp atual e o nome original do arquivo
+    callback(null, Date.now() + file.originalname);
+  },
+});
 
+// Configuração do upload utilizando o multer, passando o storage definido acima
 const upload = multer({
   storage:storage,
 })

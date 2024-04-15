@@ -4,18 +4,18 @@ const listaSchema = new mongoose.Schema(
   {
     quantidade: {
       type: Number,
-      required: [true, "Por favor, adicione a quantidade"],
+      required: true
     },
 
     unidadeMedida: {
       type: String,
       enum: ["unidade(s)", "grama(s)", "quilo(s)", "mililitro(s)", "litro(s)", "dúzia(s)", "caixa(s)"],
-      required: [true, "Por favor, adicione a unidade de medida"],
+      required: true
     },
 
     nomeItem: {
       type: String, 
-      required: [true, "Por favor, adicione o produto"],
+      required: true,
     },
 
     donoLista: {

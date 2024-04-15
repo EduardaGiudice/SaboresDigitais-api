@@ -8,8 +8,6 @@ const {
   exigirLogin,
 } = require("../Controllers/usuarioController");
 
-const storage = require("../Config/multer");
-const multer = require("multer");
 
 const router = express.Router();
 const upload = require("../Config/multer");
@@ -30,7 +28,7 @@ router.put(
   atualizarUsuarioController
 );
 
-//listar dados do usuário
+//Listar dados do usuário
 router.get("/dadosUsuario", exigirLogin, dadosUsuarioController);
 
 //Alterar Senha
