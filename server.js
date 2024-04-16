@@ -17,10 +17,10 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 //Rotas
-app.use("/api/v1/auth", require("./Routes/usuarioRoutes"));
-app.use("/api/v1/post", require("./Routes/postRoutes"));
-app.use("/api/v1/lista", require("./Routes/listaRoutes"));
-app.use("/api/v1/comentarios", require("./Routes/comentarioRoutes"));
+app.use("/auth", require("./Routes/usuarioRoutes"));
+app.use("/post", require("./Routes/postRoutes"));
+app.use("/lista", require("./Routes/listaRoutes"));
+app.use("/comentarios", require("./Routes/comentarioRoutes"));
 
 
 app.get("/", (req, res) => {
