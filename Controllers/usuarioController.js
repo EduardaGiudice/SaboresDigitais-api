@@ -29,7 +29,7 @@ const registroController = async (req, res) => {
     // Confirmando se já existe um usuário com o mesmo email
     const usuarioExistente = await usuarioModel.findOne({ email });
     if (usuarioExistente) {
-      return res.status(400).send({
+      return res.status(409).send({
         success: false,
         message: "Já existe um usuário com esse email",
       });
