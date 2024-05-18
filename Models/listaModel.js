@@ -18,7 +18,7 @@ const listaSchema = new mongoose.Schema(
       required: true,
     },
 
-    donoLista: {
+    usuario_id: {
       type: mongoose.Schema.ObjectId,
       ref: "Usuario",
       required: true,

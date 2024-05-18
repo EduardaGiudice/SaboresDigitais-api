@@ -3,12 +3,12 @@ const { exigirLogin } = require("../Controllers/usuarioController");
 const router = express.Router();
 const {
   addComentario,
-  getComentariosByPostId,
+  listarComentariosByPostId,
   quantidadeComentariosController,
 } = require("../Controllers/comentarioController");
 
 //Listar Comentarios
-router.get("/listarComentarios/:postId", exigirLogin, getComentariosByPostId);
+router.get("/listarComentarios/:postId", exigirLogin, listarComentariosByPostId);
 
 //Adicionar Novo Comentário
 router.post("/novoComentario/:postId", exigirLogin, addComentario);

@@ -93,7 +93,8 @@ const loginController = async (req, res) => {
     }
 
     // Gerar token JWT para autenticação
-    const token = await JWT.sign({ _id: usuario._id }, process.env.JWT_SECRET);
+    const token = await JWT.sign({ _id: usuario._id }, process.env.JWT_SECRET, {
+    });
 
     // Remover a senha do usuário da resposta
     usuario.senha = undefined;

@@ -33,11 +33,6 @@ const usuarioSchema = new mongoose.Schema(
       type: String,
       default: "v1711932923",
     },
-
-    role: {
-      type: String,
-      default: "usuario",
-    },
   },
   { timestamps: true }
 );

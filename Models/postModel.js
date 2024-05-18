@@ -4,8 +4,8 @@ const comentarioModel = require("./comentarioModel");
 const postSchema = new mongoose.Schema(
   {
     imagemReceita: {
-      type: String, // A imagem da receita será armazenada como uma URL
-      required: [true, "Por favor, adicione a URL da imagem da receita"],
+      type: String,
+      required: true
     },
 
     cloudinary_id: {
@@ -32,7 +32,7 @@ const postSchema = new mongoose.Schema(
       required: true,
     },
 
-    donoPost: {
+    usuario_id: {
       type: mongoose.Schema.ObjectId,
       ref: "Usuario",
       required: true,

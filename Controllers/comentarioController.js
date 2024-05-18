@@ -1,7 +1,7 @@
 const comentarioModel = require("../Models/comentarioModel");
 
 // Lista os comentários pelo ID do post
-const getComentariosByPostId = async (req, res) => {
+const listarComentariosByPostId = async (req, res) => {
   try {
     // Obtém o ID do post
     const postId = req.params.postId;
@@ -61,6 +61,6 @@ const quantidadeComentariosController = async (req, res) => {
 
 module.exports = {
   addComentario,
-  getComentariosByPostId,
+  listarComentariosByPostId,
   quantidadeComentariosController,
 };

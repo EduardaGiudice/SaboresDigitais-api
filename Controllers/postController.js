@@ -21,7 +21,7 @@ const novoPostController = async (req, res) => {
       passosPreparo: req.body.passosPreparo,
       imagemReceita: result.secure_url,
       cloudinary_id: result.public_id,
-      donoPost: req.auth._id,
+      usuario_id: req.auth._id,
     });
     // Salva o novo post no bd
     await post.save();
@@ -41,7 +41,7 @@ const listarPostsController = async (req, res) => {
     // Busca todos os posts no banco de dados, populando os dados do usuário que criou cada post
     const posts = await postModel
       .find()
-      .populate("donoPost", "_id nomeUsuario imagemPerfil")
+      .populate("usuario_id", "_id nomeUsuario imagemPerfil")
       .sort({ createdAt: -1 });
     // Retorna uma resposta de sucesso
     res.status(200).send({
@@ -64,8 +64,8 @@ const listarMeusPostsController = async (req, res) => {
   try {
     // Busca os posts do usuário autenticado, populando os dados do usuário que criou cada post
     const usuarioPosts = await postModel
-      .find({ donoPost: req.auth._id })
-      .populate("donoPost", "_id nomeUsuario imagemPerfil")
+      .find({ usuario_id: req.auth._id })
+      .populate("usuario_id", "_id nomeUsuario imagemPerfil")
       .sort({ createdAt: -1 });
 
     // Retorna uma resposta de sucesso
@@ -156,7 +156,7 @@ const buscarPorNomeController = async (req, res) => {
     // Buscar posts cujo nome da receita contenha a string fornecida
     const posts = await postModel
       .find({ nomeReceita: { $regex: new RegExp(nomeReceita, "i") } })
-      .populate("donoPost", "_id nomeUsuario imagemPerfil")
+      .populate("usuario_id", "_id nomeUsuario imagemPerfil")
       .sort({ createdAt: -1 });
 
     // Responder com os posts encontrados
