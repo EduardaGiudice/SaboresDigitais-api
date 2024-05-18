@@ -11,12 +11,11 @@ const exigirLogin = jwt({
   algorithms: ["HS256"], // Algoritmo utilizado para assinar tokens JWT
 });
 
-// Registro do usuário
+// Registro de usuário
 const registroController = async (req, res) => {
   try {
     // Extrair informações do corpo da requisição
     const { nomeUsuario, email, senha } = req.body;
-
     // Verificar se todos os campos obrigatórios estão presentes e a senha tem pelo menos 6 caracteres
     if (!nomeUsuario || !email || !senha || senha.length < 6) {
       return res.status(400).send({
@@ -25,7 +24,6 @@ const registroController = async (req, res) => {
           "Nome, email e senha são obrigatórios e a senha deve ter pelo menos 6 caracteres",
       });
     }
-
     // Confirmando se já existe um usuário com o mesmo email
     const usuarioExistente = await usuarioModel.findOne({ email });
     if (usuarioExistente) {
@@ -34,17 +32,14 @@ const registroController = async (req, res) => {
         message: "Já existe um usuário com esse email",
       });
     }
-
     // Hash da senha antes de salvar no banco de dados
     const hashedSenha = await hashSenha(senha);
-
     // Criar um novo usuário no bd
     const usuario = await usuarioModel.create({
       nomeUsuario,
       email,
       senha: hashedSenha,
     });
-
     // Retorna uma resposta de sucesso
     return res.status(201).send({
       success: true,
@@ -60,12 +55,11 @@ const registroController = async (req, res) => {
   }
 };
 
-// Login do usuário
+// Login de usuário
 const loginController = async (req, res) => {
   try {
     // Obtém informações do corpo da requisição
     const { email, senha } = req.body;
-
     // Verificar se email e senha foram fornecidos
     if (!email || !senha) {
       return res.status(400).send({
@@ -73,7 +67,6 @@ const loginController = async (req, res) => {
         message: "Por favor, digite seu email e senha",
       });
     }
-
     // Encontrar o usuário com o email fornecido
     const usuario = await usuarioModel.findOne({ email });
     if (!usuario) {
@@ -82,7 +75,6 @@ const loginController = async (req, res) => {
         message: "Usuário não encontrado",
       });
     }
-
     // Comparar a senha fornecida com a senha armazenada no bd
     const matchSenha = await compararSenha(senha, usuario.senha);
     if (!matchSenha) {
@@ -91,14 +83,11 @@ const loginController = async (req, res) => {
         message: "Email e senha inválidos",
       });
     }
-
     // Gerar token JWT para autenticação
     const token = await JWT.sign({ _id: usuario._id }, process.env.JWT_SECRET, {
     });
-
     // Remover a senha do usuário da resposta
     usuario.senha = undefined;
-
     // Retorna uma resposta de sucesso
     return res.status(200).send({
       success: true,

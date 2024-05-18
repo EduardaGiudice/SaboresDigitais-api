@@ -148,7 +148,7 @@ const deletarPostController = async (req, res) => {
   }
 };
 
-// Buscar post por nomeReceita
+// Buscar post por nome da receita
 const buscarPorNomeController = async (req, res) => {
   try {
     const { nomeReceita } = req.params;
@@ -182,18 +182,15 @@ const likePostController = async (req, res) => {
     // Obtém o ID do post da URL e o ID do usuário logado
     const { postId } = req.params;
     const usuarioId = req.auth._id;
-
     // Verificar se o usuário já curtiu o post
     const existingLike = await likeModel.findOne({
       post: postId,
       usuario: usuarioId,
     });
-
     // Se o usuário já curtiu, retornar uma mensagem indicando que já curtiu
     if (existingLike) {
       return res.status(400).json({ message: "Você já curtiu este post" });
     }
-
     //Se o usuário ainda não curtiu, criar uma nova curtida
     const newLike = new likeModel({
       post: postId,
@@ -201,7 +198,6 @@ const likePostController = async (req, res) => {
     });
     // Salvar a nova curtida no bd
     await newLike.save();
-
     // Retorna uma resposta de sucesso
     res.status(200).json({ message: "Post curtido com sucesso" });
   } catch (error) {
