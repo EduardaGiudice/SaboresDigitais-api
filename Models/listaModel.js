@@ -9,7 +9,7 @@ const listaSchema = new mongoose.Schema(
 
     unidadeMedida: {
       type: String,
-      enum: ["unidade(s)", "grama(s)", "quilo(s)", "mililitro(s)", "litro(s)", "dúzia(s)", "caixa(s)"],
+      enum: ["unidade(s)", "grama(s)", "quilo(s)", "mililitro(s)", "litro(s)", "duzia(s)", "caixa(s)"],
       required: true
     },
 
