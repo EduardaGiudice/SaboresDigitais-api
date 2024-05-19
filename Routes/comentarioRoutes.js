@@ -2,16 +2,16 @@ const express = require("express");
 const { exigirLogin } = require("../Controllers/usuarioController");
 const router = express.Router();
 const {
-  addComentario,
-  listarComentariosByPostId,
+  novoComentarioController,
   quantidadeComentariosController,
+  listarComentariosController,
 } = require("../Controllers/comentarioController");
 
 //Listar Comentarios
-router.get("/listarComentarios/:postId", exigirLogin, listarComentariosByPostId);
+router.get("/listarComentarios/:postId", exigirLogin, listarComentariosController);
 
 //Adicionar Novo Comentário
-router.post("/novoComentario/:postId", exigirLogin, addComentario);
+router.post("/novoComentario/:postId", exigirLogin, novoComentarioController);
 
 // Contar os comentários de um post
 router.get(

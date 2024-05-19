@@ -21,7 +21,7 @@ const novoPostController = async (req, res) => {
       passosPreparo: req.body.passosPreparo,
       imagemReceita: result.secure_url,
       cloudinary_id: result.public_id,
-      usuario_id: req.auth._id,
+      donoPost: req.auth._id,
     });
     // Salva o novo post no bd
     await post.save();
@@ -41,7 +41,7 @@ const listarPostsController = async (req, res) => {
     // Busca todos os posts no banco de dados, populando os dados do usuário que criou cada post
     const posts = await postModel
       .find()
-      .populate("usuario_id", "_id nomeUsuario imagemPerfil")
+      .populate("donoPost", "_id nomeUsuario imagemPerfil")
       .sort({ createdAt: -1 });
     // Retorna uma resposta de sucesso
     res.status(200).send({
@@ -64,8 +64,8 @@ const listarMeusPostsController = async (req, res) => {
   try {
     // Busca os posts do usuário autenticado, populando os dados do usuário que criou cada post
     const usuarioPosts = await postModel
-      .find({ usuario_id: req.auth._id })
-      .populate("usuario_id", "_id nomeUsuario imagemPerfil")
+      .find({ donoPost: req.auth._id })
+      .populate("donoPost", "_id nomeUsuario imagemPerfil")
       .sort({ createdAt: -1 });
 
     // Retorna uma resposta de sucesso
@@ -148,7 +148,7 @@ const deletarPostController = async (req, res) => {
   }
 };
 
-// Buscar post por nome da receita
+// Buscar post por nomeReceita
 const buscarPorNomeController = async (req, res) => {
   try {
     const { nomeReceita } = req.params;
@@ -156,7 +156,7 @@ const buscarPorNomeController = async (req, res) => {
     // Buscar posts cujo nome da receita contenha a string fornecida
     const posts = await postModel
       .find({ nomeReceita: { $regex: new RegExp(nomeReceita, "i") } })
-      .populate("usuario_id", "_id nomeUsuario imagemPerfil")
+      .populate("donoPost", "_id nomeUsuario imagemPerfil")
       .sort({ createdAt: -1 });
 
     // Responder com os posts encontrados
@@ -182,15 +182,18 @@ const likePostController = async (req, res) => {
     // Obtém o ID do post da URL e o ID do usuário logado
     const { postId } = req.params;
     const usuarioId = req.auth._id;
+
     // Verificar se o usuário já curtiu o post
     const existingLike = await likeModel.findOne({
       post: postId,
       usuario: usuarioId,
     });
+
     // Se o usuário já curtiu, retornar uma mensagem indicando que já curtiu
     if (existingLike) {
       return res.status(400).json({ message: "Você já curtiu este post" });
     }
+
     //Se o usuário ainda não curtiu, criar uma nova curtida
     const newLike = new likeModel({
       post: postId,
@@ -198,6 +201,7 @@ const likePostController = async (req, res) => {
     });
     // Salvar a nova curtida no bd
     await newLike.save();
+
     // Retorna uma resposta de sucesso
     res.status(200).json({ message: "Post curtido com sucesso" });
   } catch (error) {

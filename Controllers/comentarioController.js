@@ -1,38 +1,36 @@
 const comentarioModel = require("../Models/comentarioModel");
 
 // Lista os comentários pelo ID do post
-const listarComentariosByPostId = async (req, res) => {
+const listarComentariosController = async (req, res) => {
   try {
-    // Obtém o ID do post
+    // Obtém o ID do post a partir dos parâmetros da requisição
     const postId = req.params.postId;
-    // Encontra os comentários relacionados ao post
+    // Utiliza o comentarioModel para buscar todos os comentários associados ao ID do post
     const comentarios = await comentarioModel
-      .find({ post: postId })
-      .populate("usuario");
-    // Retorna os comentários em formato JSON na resposta
+      .find({ post: postId }) // Filtra os comentários pelo campo 'post' que corresponde ao postId
+      .populate("usuario"); // Popula os dados do usuário que fez o comentário
+    // Retorna os comentários encontrados em formato JSON na resposta
     res.json({ comentarios });
   } catch (error) {
+    // Em caso de erro, retorna uma resposta com status 500 e a mensagem de erro
     res.status(500).json({ error: error.message });
   }
 };
 
 // Adiciona um novo comentário ao post
-const addComentario = async (req, res) => {
+const novoComentarioController = async (req, res) => {
   try {
     // Obtém o comentário do corpo da solicitação e o ID do post
     const { comentario } = req.body;
     const { postId } = req.params;
-
     // Obtém o ID do usuário a partir do token de autenticação
     const usuarioId = req.auth._id;
-
     // Cria uma nova instância de Comentário com os dados fornecidos
     const novoComentario = new comentarioModel({
       comentario,
       post: postId,
       usuario: usuarioId,
     });
-
     // Salva o novo comentário no bd
     await novoComentario.save();
     res.status(201).json({ message: "Comentário adicionado com sucesso!" });
@@ -60,7 +58,7 @@ const quantidadeComentariosController = async (req, res) => {
 };
 
 module.exports = {
-  addComentario,
-  listarComentariosByPostId,
+  novoComentarioController,
+  listarComentariosController,
   quantidadeComentariosController,
 };

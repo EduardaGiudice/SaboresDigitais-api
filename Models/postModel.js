@@ -5,7 +5,7 @@ const postSchema = new mongoose.Schema(
   {
     imagemReceita: {
       type: String,
-      required: true
+      required: true,
     },
 
     cloudinary_id: {
@@ -32,7 +32,7 @@ const postSchema = new mongoose.Schema(
       required: true,
     },
 
-    usuario_id: {
+    donoPost: {
       type: mongoose.Schema.ObjectId,
       ref: "Usuario",
       required: true,
