@@ -6,13 +6,13 @@ const listaModel = require("../Models/listaModel");
     // Obtém os dados de item do corpo da solicitação
     const { quantidade, unidadeMedida, nomeItem } = req.body;
     // Obtém o ID do usuário logado
-    const usuario_id = req.auth._id;
+    const donoLista = req.auth._id;
     // Cria uma nova instância de item da lista com os dados fornecidos
     const newItem = new listaModel({
       quantidade,
       unidadeMedida,
       nomeItem,
-      usuario_id,
+      donoLista,
     });
     // Salva o novo item no bd
     await newItem.save();
@@ -26,9 +26,9 @@ const listaModel = require("../Models/listaModel");
  const listarItensController = async (req, res) => {
   try {
     // Obtém o ID do usuário logado
-    const usuario_id = req.auth._id;
+    const donoLista = req.auth._id;
     // Encontra todos os itens da lista que pertencem usuário logado
-    const itens = await listaModel.find({ usuario_id });
+    const itens = await listaModel.find({ donoLista });
     // Retorna os itens da lista em formato JSON na resposta
     res.status(200).json({ success: true, data: itens });
   } catch (error) {
@@ -56,9 +56,9 @@ const listaModel = require("../Models/listaModel");
     const limparListaController = async (req, res) => {
   try {
     // Obtém o ID do usuário logado
-    const usuario_id = req.auth._id;
+    const donoLista = req.auth._id;
     // Remove todos os itens da lista pertencentes ao usuário
-    await listaModel.deleteMany({ usuario_id });
+    await listaModel.deleteMany({ donoLista });
     // Retorna uma resposta de sucesso indicando que a lista foi limpa com sucesso
     res.status(200).json({ success: true, message: "Lista limpa com sucesso" });
   } catch (error) {
