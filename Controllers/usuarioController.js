@@ -104,59 +104,34 @@ const loginController = async (req, res) => {
   }
 };
 
-//atualizar usuario
-
+//atualizar dados do usuario
 const atualizarUsuarioController = async (req, res) => {
   try {
-    const { nomeUsuario, senha, email } = req.body;
-
+    const { nomeUsuario, email } = req.body;
     // Encontrar o usuário pelo email
     const usuario = await usuarioModel.findOne({ email });
-
-    // Validar senha se fornecida
-    if (senha && senha.length < 6) {
-      return res.status(400).send({
-        success: false,
-        message: "A senha é obrigatória e deve ter no mínimo 6 caracteres",
-      });
-    }
-
     let imagemPerfilUrl = usuario.imagemPerfil;
     let cloudinaryId = usuario.cloudinary_id;
-
     // Se uma nova imagem foi fornecida, faça o upload para o Cloudinary
     if (req.file) {
       // Excluir a imagem anterior do Cloudinary, se existir
       if (cloudinaryId) {
-        await cloudinary.uploader.destroy(cloudinaryId);
-      }
-
+        await cloudinary.uploader.destroy(cloudinaryId)}
       // Fazer upload da nova imagem
       const result = await cloudinary.uploader.upload(req.file.path);
-
       // Inicializar variáveis para armazenar a URL da imagem de perfil e o ID do Cloudinary
       imagemPerfilUrl = result.secure_url;
       cloudinaryId = result.public_id;
-
       // Exclua o arquivo temporário após o upload
       fs.unlinkSync(req.file.path);
     }
-
-    // Hash da nova senha, se fornecida
-    const senhaHashed = senha ? await hashSenha(senha) : undefined;
-
     // Atualizar o perfil do usuário no bd
     const atualizarUsuario = await usuarioModel.findOneAndUpdate(
       { email }, // Critério de busca: email
-      {
-        nomeUsuario: nomeUsuario || usuario.nomeUsuario,
-        senha: senhaHashed || usuario.senha,
+      {nomeUsuario: nomeUsuario || usuario.nomeUsuario,
         imagemPerfil: imagemPerfilUrl,
-        cloudinary_id: cloudinaryId,
-      },
-      { new: true }
-    );
-
+        cloudinary_id: cloudinaryId,},
+      { new: true });
     // Responder com sucesso e o novo objeto de usuário atualizado
     res.status(200).send({
       success: true,
@@ -170,13 +145,12 @@ const atualizarUsuarioController = async (req, res) => {
       message: "Erro ao atualizar o perfil do usuário",
       error,
     });
-  }
-};
+  }};
 
+//atualizar senha
 const atualizarSenhaController = async (req, res) => {
   try {
     const { senhaAtual, novaSenha, confirmarNovaSenha } = req.body;
-
     // Verificar se a nova senha e a confirmação são iguais
     if (novaSenha !== confirmarNovaSenha) {
       return res.status(400).send({
@@ -184,10 +158,8 @@ const atualizarSenhaController = async (req, res) => {
         message: "A nova senha e a confirmação não coincidem",
       });
     }
-
     // Encontrar usuário
     const usuario = await usuarioModel.findById(req.auth._id);
-
     // Comparar a senha atual fornecida com a senha do usuário no banco de dados
     const matchSenha = await compararSenha(senhaAtual, usuario.senha);
     if (!matchSenha) {
@@ -196,14 +168,11 @@ const atualizarSenhaController = async (req, res) => {
         message: "Senha atual incorreta",
       });
     }
-
     // Hash da nova senha
     const novaSenhaHashed = await hashSenha(novaSenha);
-
     // Atualizar a senha do usuário
     usuario.senha = novaSenhaHashed;
     await usuario.save();
-
     // Retorna uma resposta de sucesso
     return res.status(200).send({
       success: true,
@@ -219,13 +188,12 @@ const atualizarSenhaController = async (req, res) => {
   }
 };
 
+//buscar dados do usuário
 const dadosUsuarioController = async (req, res) => {
   try {
     const usuarioId = req.auth._id; // ID do usuário extraído do token JWT
-
     // Encontrar o usuário pelo ID
     const usuario = await usuarioModel.findById(usuarioId);
-
     // Verificar se o usuário foi encontrado
     if (!usuario) {
       return res.status(404).send({
